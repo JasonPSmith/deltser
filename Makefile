@@ -1,5 +1,5 @@
 build: deltser
 
 deltser: deltser.cpp
-	c++ -std=c++11 deltser.cpp -o deltser -Ofast -D NDEBUG
+	g++ -std=c++14 -O3 -pthread deltser.cpp -o deltser
 
