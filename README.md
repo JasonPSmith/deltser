@@ -25,7 +25,7 @@ For example:
 ./deltser ./Examples/simple_example.dlt ./Examples/simple_example.dlt
 ```
 
-The format of the input file is as follows, first line is "dim 0", second line is a list of the filtration values of the vertices, then for each subsequent dimension there is a line "dim i" followed by all faces of dimension i, where each line is an i-face given by the boundary of that face by the boundary faces locations in the dim i-1 list. 
+The format of the input file is as follows, first line is "dim 0", second line is a list of the filtration values of the vertices, then for each subsequent dimension there is a line "dim i" followed by all faces of dimension i, where each line is an i-face given by the boundary of that face by the boundary faces locations in the dim i-1 list. With an optional filtration value at the end.
 
 For example, consider the complex constructed from the complete bidirectional digraph on 3 vertices, where the 3-cycles are the 2-simplices (so two 2-simplices with the same vertices, but different edges). The input to deltser would be:
 
@@ -43,7 +43,6 @@ dim 2
 0 1 2
 3 4 5
 ```
-
 where the zeroes under dim 0 indicate the number of vertices, under dim 1 is a list of directed edges, and under dim 2 are the 2 simplices where "0 1 2" means the simplex whose boundary is the 1st, 2nd and 3rd edge, which is (0,1),(1,2),(2,0). More examples can be seen in the Examples folder.
 
 
