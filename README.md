@@ -57,7 +57,7 @@ This will compute the same complex as in Examples/simple_example.dlt. So the ent
 There is also deltser_file, which takes as input the address of dlt file. For example
 ```sh
 from pydeltser import *
-deltser('./Examples/simple_example.dlt')
+deltser_file('./Examples/simple_example.dlt')
 ```
 
-The output of both pydeltser functions is a dictionary with entries: `cell\_counts', `finite\_pairs', `infinte\_pairs' and `bettis'. Where the i'th entry of each corresponds to the i'th dimension. And an entry of infinite pairs is a single number denoting the birth time of the pair.
+The output of both pydeltser functions is a dictionary with entries: `cell_counts', `finite_pairs', `infinte_pairs' and `bettis'. Where the i'th entry of each corresponds to the i'th dimension. And an entry of infinite pairs is a single number denoting the birth time of the pair.
