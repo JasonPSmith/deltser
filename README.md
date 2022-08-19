@@ -29,6 +29,7 @@ The format of the input file is as follows, first line is "dim 0", second line i
 
 For example, consider the complex constructed from the complete bidirectional digraph on 3 vertices, where the 3-cycles are the 2-simplices (so two 2-simplices with the same vertices, but different edges). The input to deltser would be:
 
+```sh
 dim 0
 0 0 0
 dim 1
@@ -41,6 +42,7 @@ dim 1
 dim 2
 0 1 2
 3 4 5
+```
 
 where the zeroes under dim 0 indicate the number of vertices, under dim 1 is a list of directed edges, and under dim 2 are the 2 simplices where "0 1 2" means the simplex whose boundary is the 1st, 2nd and 3rd edge, which is (0,1),(1,2),(2,0). More examples can be seen in the Examples folder.
 
