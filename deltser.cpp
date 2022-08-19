@@ -235,6 +235,7 @@ public:
     //dim 0, followed by a line with an int for each vertex, the value of which is the filtration
     //after any subsequent dim i each line contained a list of facets of the simplex, followed
     //by a filtration value, the facets are indexed by their position in the list for dim i-1
+    delta_complex_t(){};
 	delta_complex_t(std::string s){
         std::ifstream infile;
         infile.open(s);
@@ -271,6 +272,32 @@ public:
                 cells.back().push_back(delta_complex_cell_t(current_dimension,new_face,val,loc));
                 cells.back().back().set_children();
                 cells.back().back().set_vertices();
+        	}
+        }
+	}
+	delta_complex_t(std::vector<std::vector<std::vector<value_t>>>& faces){
+        int val = 0;
+        cells.resize(faces.size());
+
+        //for dim 0 create a vertex cell for each entry on that line with filtration
+	    //value given by the entry
+        for( auto v : faces[0] ){
+            cells[0].push_back(delta_complex_cell_t(0,cells[0].size(),v[0]));
+        }
+        //read through all lines of input file, if a dim i is encountered then set
+        //current dimension to i
+        for (index_t current_dimension = 1; current_dimension < faces.size(); current_dimension++){
+            for (auto f : faces[current_dimension]){
+                val = f.back();
+                f.pop_back();
+                std::vector<delta_complex_cell_t*> new_face;
+                for (auto p : f){
+                    new_face.push_back(&cells[current_dimension-1][p]);
+                }
+                value_t loc = cells[current_dimension].size();
+                cells[current_dimension].push_back(delta_complex_cell_t(current_dimension,new_face,val,loc));
+                cells[current_dimension].back().set_children();
+                cells[current_dimension].back().set_vertices();
         	}
         }
 	}
@@ -504,19 +531,22 @@ class deltser {
 	delta_complex_t* complex;
 	std::ofstream outfile;
 	index_t n, dim_max;
+	bool python;
 	mutable std::vector<filtration_entry_t> coface_entries;
 	size_t max_entries;
 	std::vector<size_t> skipped_entries;
-	std::vector<size_t> infinite_pairs;
 
 public:
-	deltser(	delta_complex_t* _complex, char* _outname, size_t _max_entries)
+	std::vector<std::vector<std::pair<value_t,value_t>>> finite_pairs;
+	std::vector<std::vector<value_t>> infinite_pairs;
+	deltser(	delta_complex_t* _complex, char* _outname, size_t _max_entries, bool _python)
 	    : complex(_complex), n(complex->number_of_cells(0)),
 	      dim_max(complex->top_dimension()),
-		  max_entries(_max_entries){
-				outfile.open(_outname);
-				skipped_entries.assign(dim_max+1,0);
-				infinite_pairs.assign(dim_max+1,0);
+		  max_entries(_max_entries),
+		  python(_python) {
+				if(!python) outfile.open(_outname);
+				infinite_pairs.resize(dim_max+1);
+				finite_pairs.resize(dim_max+1);
 			  }
 
 	value_t compute_filtration(const index_t index, index_t dim) const {
@@ -536,13 +566,17 @@ public:
 		std::sort(edges.rbegin(), edges.rend(),
 		          greater_filtration_or_smaller_index());
 
-		outfile << "persistence intervals in dim 0:" << std::endl;
+		if(!python) { outfile << "persistence intervals in dim 0:" << std::endl; }
 
 		for (auto e : edges) {
 			value_t birth = dset.link(complex->get(1,get_index(e))->vertices[0], complex->get(1,get_index(e))->vertices[1]);
 			if (birth != -1) {
 				if (get_filtration(e) > birth) {
-					outfile << " [" << birth << ", " << get_filtration(e) << ")" << std::endl;
+					if(!python){
+						outfile << " [" << birth << ", " << get_filtration(e) << ")" << std::endl;
+					} else {
+						finite_pairs[0].push_back(std::make_pair(birth,get_filtration(e)));
+					}
 				}
 			} else {
 				columns_to_reduce.push_back(e);
@@ -552,8 +586,10 @@ public:
 
 		for (index_t i = 0; i < n; ++i)
 			if (dset.find(i) == i){
-				outfile << " [0, )" << std::endl << std::flush;
-				infinite_pairs[0]++;
+				if(!python){
+				    outfile << " [0, )" << std::endl << std::flush;
+				}
+				infinite_pairs[0].push_back(0);
 			}
 	}
 
@@ -575,7 +611,8 @@ public:
 	void compute_pairs(std::vector<filtration_index_t>& columns_to_reduce,
 	                   pivot_column_index_t& pivot_column_index, index_t dim) {
 
-		outfile << "# persistence intervals in dim " << dim << ":" << std::endl;
+		if(!python) { outfile << "# persistence intervals in dim " << dim << ":" << std::endl; }
+
 		std::cout << "Computing Dimension " << dim << std::endl;
         compressed_sparse_matrix<filtration_entry_t> reduction_coefficients;
 
@@ -625,8 +662,10 @@ public:
 
 						value_t death = get_filtration(pivot);
 						if (death > filtration) {
-							outfile << " [" << filtration << ", " << death << ")" << std::endl
-							          << std::flush;
+							if(!python){
+							    outfile << " [" << filtration << ", " << death << ")" << std::endl << std::flush;
+						    }
+						    else { finite_pairs[dim].push_back(std::make_pair(filtration,death)); }
 						}
 
                         pivot_column_index[get_index(pivot)] =  index_column_to_reduce;
@@ -639,8 +678,10 @@ public:
 						break;
 					}
 				} else if(get_index(pivot) == -1) {
-					outfile << " [" << filtration << ", )" << std::endl << std::flush;
-					infinite_pairs[dim]++;
+					if(!python){
+						outfile << " [" << filtration << ", )" << std::endl << std::flush;
+					} 
+					infinite_pairs[dim].push_back(filtration);
 					break;
 				}else {
 					//outfile << "[?" << filtration << ", " << ", ?)" << std::endl;
@@ -656,20 +697,29 @@ public:
 
 	std::vector<filtration_index_t> get_edges();
 
+	std::vector<value_t> num_infinite_pairs(){
+		std::vector<value_t> out;
+		for(auto i : infinite_pairs) out.push_back(i.size());
+		return out;
+	} 
+
 	void print_summary(){
-		outfile << std::endl;
-		outfile << "# Betti Numbers:" << std::endl;
-		for(index_t i = 0; i <= dim_max; i++){
-			outfile << "#        dim H_" << i << " = " << infinite_pairs[i];
-			if( skipped_entries[i] > 0){
-				outfile << " : (" << skipped_entries[i] << " entries skipped)";
+		if(!python){
+			std::vector<value_t> inf_pairs = num_infinite_pairs();
+			outfile << std::endl;
+			outfile << "# Betti Numbers:" << std::endl;
+			for(index_t i = 0; i <= dim_max; i++){
+				outfile << "#        dim H_" << i << " = " << inf_pairs[i];
+				if( skipped_entries[i] > 0){
+					outfile << " : (" << skipped_entries[i] << " entries skipped)";
+				}
+				outfile << std::endl;
 			}
 			outfile << std::endl;
-		}
-		outfile << std::endl;
-		outfile << "# Cell Counts:" << std::endl;
-		for(index_t i = 0; i <= dim_max; i++){
-			outfile << "#        dim C_" << i << " = " << complex->number_of_cells(i) << std::endl;
+			outfile << "# Cell Counts:" << std::endl;
+			for(index_t i = 0; i <= dim_max; i++){
+				outfile << "#        dim C_" << i << " = " << complex->number_of_cells(i) << std::endl;
+			}
 		}
 	}
 
@@ -770,7 +820,7 @@ int main(int argc, char** argv) {
 	if(argc > 3) max_entries = atoi(argv[3]);
 
     //create deltser object and compute persistent homology
-	deltser(&complex,outname,max_entries).compute_barcodes();
+	deltser(&complex,outname,max_entries,false).compute_barcodes();
 }
 
 //END main
