@@ -27,7 +27,7 @@ For example:
 
 The format of the input file is as follows, first line is "dim 0", second line is a list of the filtration values of the vertices, then for each subsequent dimension there is a line "dim i" followed by all faces of dimension i, where each line is an i-face given by the boundary of that face by the boundary faces locations in the dim i-1 list. With an optional filtration value at the end.
 
-For example, consider the complex constructed from the complete bidirectional digraph on 3 vertices, where the 3-cycles are the 2-simplices (so two 2-simplices with the same vertices, but different edges). The input to deltser would be:
+For example, consider the complex constructed from the complete bidirectional digraph on 3 vertices, where the 3-cycles are the 2-simplices (so two 2-simplices with the same vertices, but different edges). With no filtration weights. The input to deltser would be:
 
 ```sh
 dim 0
