@@ -1,14 +1,18 @@
 # deltser
-A modified version of flagser that computes persistent homology of delta complexes, associated python wrapper.
+A modified version of flagser that computes persistent homology of delta complexes, and associated python wrapper.
 
-To install, first ensure python packages numpy and pybind11 are installed, then run:
+To install just deltser (without python wrapper), then run:
+```sh
+git clone https://github.com/JasonPSmith/tournser.git
+make
+```
+
+If the python wrapper is required, first ensure python packages numpy and pybind11 are installed, then run:
 ```sh
 git clone --recursive https://github.com/JasonPSmith/tournser.git
 make
 pip install .
-```
-
-If the python wrapper is not required then remove "--recursive" and "pip install ."
+``` 
 
 To run deltser simply do
 ```sh
