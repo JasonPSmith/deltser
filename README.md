@@ -18,14 +18,14 @@ To run deltser simply do
 ```sh
 ./deltser in_address out_address approx_val
 ```
-where in_address is the address of a file containing the delta complex (see format below), out_address is where to save the output, and approx_val is an optional entry that approximates the homology. See [flagser-count]([)https://github.com/JasonPSmith/flagser-count) for more details on approximate.
+where in_address is the address of a file containing the delta complex (see format below), out_address is where to save the output, and approx_val is an optional entry that approximates the homology. See [flagser-count](https://github.com/JasonPSmith/flagser-count) for more details on approximate.
 
 For example:
 ```sh
 ./deltser ./Examples/simple_example.dlt ./Examples/simple_example.dlt
 ```
 
-The format of the input file is as follows, first line is "dim 0", second line is a list of the filtration values of the vertices, then for each subsequent dimension there is a line "dim i" followed by all faces of dimension i, where each line is an i-face given by the boundary of that face by it's location in the dim i-1 list. 
+The format of the input file is as follows, first line is "dim 0", second line is a list of the filtration values of the vertices, then for each subsequent dimension there is a line "dim i" followed by all faces of dimension i, where each line is an i-face given by the boundary of that face by the boundary faces locations in the dim i-1 list. 
 
 For example, consider the complex constructed from the complete bidirectional digraph on 3 vertices, where the 3-cycles are the 2-simplices (so two 2-simplices with the same vertices, but different edges). The input to deltser would be:
 
