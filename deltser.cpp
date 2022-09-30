@@ -545,6 +545,7 @@ public:
 		  max_entries(_max_entries),
 		  python(_python) {
 				if(!python) outfile.open(_outname);
+                skipped_entries.assign(dim_max+1,0);
 				infinite_pairs.resize(dim_max+1);
 				finite_pairs.resize(dim_max+1);
 			  }
@@ -659,7 +660,6 @@ public:
                         index_column_to_add = pivot_column_idx;
                         continue;
                     } else {
-
 						value_t death = get_filtration(pivot);
 						if (death > filtration) {
 							if(!python){
@@ -680,7 +680,7 @@ public:
 				} else if(get_index(pivot) == -1) {
 					if(!python){
 						outfile << " [" << filtration << ", )" << std::endl << std::flush;
-					} 
+					}
 					infinite_pairs[dim].push_back(filtration);
 					break;
 				}else {
@@ -701,7 +701,7 @@ public:
 		std::vector<value_t> out;
 		for(auto i : infinite_pairs) out.push_back(i.size());
 		return out;
-	} 
+	}
 
 	void print_summary(){
 		if(!python){
@@ -735,7 +735,6 @@ public:
 			sort_columns(columns_to_reduce,dim);
 
 			compute_pairs(columns_to_reduce, pivot_column_index, dim);
-
 			if (dim < dim_max) {
 				assemble_columns_to_reduce(simplices, columns_to_reduce, pivot_column_index,
 				                           dim + 1, complex->number_of_cells(dim+1));

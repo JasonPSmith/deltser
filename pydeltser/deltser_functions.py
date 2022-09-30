@@ -9,6 +9,3 @@ def deltser(face_list, approx=False, approx_val=100000):
 def deltser_file(in_file, approx=False, approx_val=100000):
 
     return run_deltser(np.array([[[]]]), approx, approx_val, True, in_file)
-
-
-#TODO implement print and print-dist
