@@ -271,7 +271,9 @@ public:
                 value_t loc = cells.back().size();
                 cells.back().push_back(delta_complex_cell_t(current_dimension,new_face,val,loc));
                 cells.back().back().set_children();
-                cells.back().back().set_vertices();
+                if(current_dimension == 0){
+                    cells.back().back().set_vertices();
+                }
         	}
         }
 	}
