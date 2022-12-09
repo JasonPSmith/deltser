@@ -271,7 +271,7 @@ public:
                 value_t loc = cells.back().size();
                 cells.back().push_back(delta_complex_cell_t(current_dimension,new_face,val,loc));
                 cells.back().back().set_children();
-                if(current_dimension == 0){
+                if(current_dimension == 1){
                     cells.back().back().set_vertices();
                 }
         	}
@@ -333,6 +333,28 @@ public:
 			}
 		}
 	}
+	void print(){
+        for(int d = 0; d < cells.size(); d++){
+            for(auto f : cells[d]){
+                if(d==0){std::cout << f.location << " : ";}
+                else{
+	                for(auto i : f.boundary){
+	                    std::cout << i->location << " ";
+	                }
+                }
+                std::cout << " : ";
+				for(auto i : f.coboundary){
+					std::cout << i << " ";
+				}
+                std::cout << " : ";
+				for(auto i : f.children){
+					std::cout << i->location << " ";
+				}
+                std::cout << " : " << f.location << " : " << f.dimension << " : " << f.filtration;
+                std::cout << std::endl;
+            }
+        }
+    }
 //END delta_complex_t
 };
 
@@ -814,6 +836,7 @@ int main(int argc, char** argv) {
 	const char* filename = argv[1];
 	char* outname = argv[2];
     delta_complex_t complex(filename);
+    //complex.print();
 	complex.compute_oldest_cofaces();
 
 	//initialise approximate functionality
