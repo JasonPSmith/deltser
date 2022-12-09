@@ -3,13 +3,13 @@ A modified version of flagser that computes persistent homology of delta complex
 
 To install just deltser (without python wrapper), then run:
 ```sh
-git clone https://github.com/JasonPSmith/tournser.git
+git clone https://github.com/JasonPSmith/deltser.git
 make
 ```
 
 If the python wrapper is required, first ensure python packages numpy and pybind11 are installed, then run:
 ```sh
-git clone --recursive https://github.com/JasonPSmith/tournser.git
+git clone --recursive https://github.com/JasonPSmith/deltser.git
 make
 pip install .
 ``` 
