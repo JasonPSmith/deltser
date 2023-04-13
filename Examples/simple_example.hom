@@ -1,0 +1,16 @@
+persistence intervals in dim 0:
+ [0, )
+# persistence intervals in dim 1:
+# persistence intervals in dim 2:
+ [0, )
+ [0, )
+
+# Betti Numbers:
+#        dim H_0 = 1
+#        dim H_1 = 0 : (4 entries skipped)
+#        dim H_2 = 2
+
+# Cell Counts:
+#        dim C_0 = 3
+#        dim C_1 = 6
+#        dim C_2 = 2

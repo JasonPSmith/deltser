@@ -41,7 +41,7 @@ PYBIND11_MODULE(pydelt, m) {
     for(int i = 0; i < complex.cells.size(); i++){
         cell_counts.push_back(complex.cells[i].size());
     }
-    
+
     output["cell_counts"] = cell_counts;
     output["finite_pairs"] = thedeltser.finite_pairs;
     output["infinite_pairs"] = thedeltser.infinite_pairs;
