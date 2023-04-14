@@ -12,7 +12,7 @@ If the python wrapper is required, first ensure python packages numpy and pybind
 git clone --recursive https://github.com/JasonPSmith/deltser.git
 make
 pip install .
-``` 
+```
 
 To run deltser simply do
 ```sh
@@ -58,6 +58,12 @@ There is also deltser_file, which takes as input the address of dlt file. For ex
 ```sh
 from pydeltser import *
 deltser_file('./Examples/simple_example.dlt')
+```
+
+There is also deltser_facet, which takes as input the maximal faces of an ordered simplicial complex and number of vertices, where each face is given by its vertices (0-faces). For example
+```sh
+from pydeltser import *
+deltser_facet('./Examples/facet_example.dlt',4)
 ```
 
 The output of both pydeltser functions is a dictionary with entries: 'cell_counts', 'finite_pairs', 'infinte_pairs' and 'bettis'. Where the i'th entry of each corresponds to the i'th dimension. And an entry of infinite pairs is a single number denoting the birth time of the pair.
