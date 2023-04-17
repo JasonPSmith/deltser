@@ -33,8 +33,14 @@ def deltser_facet(in_file, num_vert, approx=False, approx_val=100000):
                     boundary[1].append(len(dims_dict[k-1]))
                     dims_dict[k-1][x] = (len(dims_dict[k-1]),[])
 
-    faces = [[face+(0,) for face in dims_dict[k].keys()] for k in range(len(dims_dict))]
-    faces[0] = [(0,) for i in range(num_vert)]
+    faces = []
+    faces.append([(0,) for i in range(num_vert)])
+    faces.append([face+(0,) for face in dims_dict[1].keys()])
+    for k in range(2,len(dims_dict)):
+        faces.append([tuple(boundary[1])+(0,) for face,boundary in dims_dict[k].items()])
+
+    #print(dims_dict)
+    #print(faces)
 
     print('Computing Homology')
     return run_deltser(faces, approx, approx_val, False, 'null')
